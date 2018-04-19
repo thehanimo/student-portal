@@ -31,9 +31,10 @@ def load_user(user_id):
 @login_required
 def home():
 	username = current_user.username
+	allQuery = dbsess.query(User).all()
 	myQuery = dbsess.query(User).filter_by(username=username).one()
 	infoQuery = dbsess.query(UserInfo).filter_by(user=myQuery).one() 
-	return render_template('home.html', myQuery=myQuery, infoQuery=infoQuery)
+	return render_template('home.html', myQuery=myQuery, infoQuery=infoQuery, allQuery=allQuery)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -61,6 +62,8 @@ def login():
 def register():
 	regText = ""
 	if request.method == 'POST':
+		if current_user.username != 'admin':
+			return render_template(url_for('register'))
 		username = request.form['username']
 		password1 = request.form['password1']
 		password2 = request.form['password2']
@@ -130,6 +133,19 @@ def edit():
 	else:
 		return render_template('edit.html', editText=editText)
 
+@app.route("/delete/<name>", methods=["GET", "POST"])
+def delete(name):
+	if request.method == 'POST':
+		if current_user.username != 'admin':
+			return render_template(url_for('edit'))
+		myQuery = dbsess.query(User).filter_by(username=name).one()
+		infoQuery = dbsess.query(UserInfo).filter_by(user=myQuery).one()
+		dbsess.delete(myQuery)
+		dbsess.delete(infoQuery)
+		dbsess.commit()
+		return redirect(url_for('home'))
+	else:
+		return render_template('delete.html', username=name)
 
 
 # somewhere to logout

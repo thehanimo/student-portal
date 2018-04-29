@@ -5,7 +5,7 @@ from flask_login import LoginManager, UserMixin, login_required, login_user, log
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, User, UserInfo
+from database_setup import Base, User, UserInfo, Attendance
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -30,11 +30,12 @@ def load_user(user_id):
 @app.route('/home')
 @login_required
 def home():
-	username = current_user.username
-	allQuery = dbsess.query(User).all()
-	myQuery = dbsess.query(User).filter_by(username=username).one()
-	infoQuery = dbsess.query(UserInfo).filter_by(user=myQuery).one() 
-	return render_template('home.html', myQuery=myQuery, infoQuery=infoQuery, allQuery=allQuery)
+    username = current_user.username
+    attendQuery = dbsess.query(Attendance).all()
+    allQuery = dbsess.query(User).all()
+    myQuery = dbsess.query(User).filter_by(username=username).one()
+    infoQuery = dbsess.query(UserInfo).filter_by(user=myQuery).one() 
+    return render_template('home.html', myQuery=myQuery, infoQuery=infoQuery, allQuery=allQuery, attendQuery=attendQuery)
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -142,12 +143,55 @@ def delete(name):
 	if request.method == 'POST':
 		myQuery = dbsess.query(User).filter_by(username=name).one()
 		infoQuery = dbsess.query(UserInfo).filter_by(user=myQuery).one()
+		attendQuery = dbsess.query(Attendance).filter_by(user=myQuery).one()
 		dbsess.delete(myQuery)
 		dbsess.delete(infoQuery)
 		dbsess.commit()
 		return redirect(url_for('home'))
 	else:
 		return render_template('delete.html', username=name)
+@app.route('/edit2/<name>',methods=["GET","POST"])
+@login_required
+def edit2(name):
+	if request.method == 'POST':
+		myQuery = dbsess.query(User).filter_by(username=name).one()
+		attendQuery = dbsess.query(Attendance).filter_by(user=myQuery).one()
+		mathp = request.form['mathp']
+		matht = request.form['matht']
+		sciencep = request.form['sciencep']
+		sciencet = request.form['sciencet']
+		artp = request.form['artp']
+		artt = request.form['artt']
+		englishp = request.form['englishp']
+		englisht = request.form['englisht']
+		attendQuery.Math_p = mathp
+		attendQuery.Math_t = matht
+		attendQuery.Science_p = sciencep
+		attendQuery.Science_t = sciencet
+		attendQuery.Art_p = artp
+		attendQuery.Art_t = artt
+		attendQuery.English_p = englishp
+		attendQuery.English_t = englisht
+		dbsess.add(attendQuery)
+		dbsess.commit()
+		return redirect(url_for('home'))	
+	else:
+		myQuery = dbsess.query(User).filter_by(username=name).one()
+		attendQuery = dbsess.query(Attendance).filter_by(user=myQuery).one()
+		return render_template("edit2.html", myQuery = myQuery, attendQuery = attendQuery, username = name)
+
+
+
+@app.route('/attendance')
+@login_required
+def attendance():
+	username = current_user.username
+	attendQuery = dbsess.query(Attendance).all()
+	allQuery = dbsess.query(User).all()
+	myQuery = dbsess.query(User).filter_by(username=username).one()
+	infoQuery = dbsess.query(UserInfo).filter_by(user=myQuery).one() 
+	return render_template('attendance.html', myQuery=myQuery, infoQuery=infoQuery, allQuery=allQuery, attendQuery=attendQuery)
+
 
 
 # somewhere to logout

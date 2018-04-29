@@ -80,7 +80,7 @@
 		</div>
 		<div class="header" id="myHeader">
 			<div class="current">
-				Home
+				Edit
 			</div>
 			<div class="nav">
 				{% if current_user.usertype == 'S' %}
@@ -101,11 +101,15 @@
 	
 	<div class="main">
 		<div class="content">
-
+			{% if usernameQuery == None %}
+			<p>User does not exist</p>
+			{% elif current_user.usertype != "A" or usernameQuery.usertype != 'S'%}
+			<p> You are not allowed to access this webPage </p>
+			{% else %}
 			<form action="/edit2/{{username}}" method="POST">
 				<div class="login">
 				<div class="login-form">
-				Math Present :<input type="number" value="{{attendQuery.Math_p}}" name="mathp">
+				Math Present :<input type="number" value="{{attendQuery.Math_p}}" name="mathp"><br>
 				Math Total :<input type="number" value="{{attendQuery.Math_t}}" name="matht">
 				Science Present :<input type="number" value="{{attendQuery.Science_p}}" name="sciencep">
 				Science Total :<input type="number" value="{{attendQuery.Science_t}}" name="sciencet">
@@ -123,6 +127,7 @@
 			</form>
 		</div>
 	</div>
+	{% endif %}
 	<div class="footer">
 
 	</div>

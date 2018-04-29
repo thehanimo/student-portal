@@ -80,7 +80,7 @@
 		</div>
 		<div class="header" id="myHeader">
 			<div class="current">
-				Home
+				Attendance
 			</div>
 			<div class="nav">
 				{% if current_user.usertype == 'S' %}
@@ -104,25 +104,41 @@
 		{% if current_user.usertype != 'S' %}
 			<p>Cannot Access Webpage ! </p>
 			
-			{% else %}
+		{% else %}
 			<h1> {{infoQuery.name}} </h1>
-				{% for query1 in attendQuery %}
-				{% if query1.userId == infoQuery.userId %}
-			<h5>Math : {{query1.Math_p/query1.Math_t * 100 }}%</p></h5>
-			<p>Present : {{query1.Math_p}} 
-			<p>Total : {{query1.Math_t}}</p>
-			<h5>Science : {{query1.Science_p/query1.Science_t * 100 }}%</h5>
-			<p>Present : {{query1.Science_p}} 
-			<p>Total : {{query1.Science_t}}</p>
-			<h5>Arts : {{query1.Art_p/query1.Art_t * 100 }}%</h5>
-			<p> Present : {{query1.Art_p}}
-			<p> Total : {{query1.Art_t}}
-			<h5>English :  {{query1.English_p/query1.English_t * 100 }}%</h5>
-			<p>Present : {{query1.English_p}}
-			<p>Total : {{query1.English_t}}
+			{% if attendQuery.Math_t == 0 %}
+			{%set math=1%}
+			{% else %}
+			{% set math=attendQuery.Math_t %}
 			{% endif %}
-			{% endfor %}
+			{% if attendQuery.Science_t == 0 %}
+			{% set sci=1 %}
+			{% else %}
+			{% set sci=attendQuery.Science_t %}
 			{% endif %}
+			{% if attendQuery.Art_t == 0 %}
+			{% set art=1 %}
+			{% else %}
+			{% set art=attendQuery.Art_t %}
+			{% endif %}
+			{% if attendQuery.English_t == 0 %}
+			{% set eng=1 %}
+			{% else %}
+			{% set eng=attendQuery.English_t %}
+			{% endif %}
+			<h5>Math : {{attendQuery.Math_p/math * 100 }}%</p></h5>
+			<p>Present : {{attendQuery.Math_p}} 
+			<p>Total : {{attendQuery.Math_t}}</p>
+			<h5>Science : {{attendQuery.Science_p/sci * 100 }}%</h5>
+			<p>Present : {{attendQuery.Science_p}} 
+			<p>Total : {{attendQuery.Science_t}}</p>
+			<h5>Arts : {{attendQuery.Art_p/art * 100 }}%</h5>
+			<p> Present : {{attendQuery.Art_p}}
+			<p> Total : {{attendQuery.Art_t}}
+			<h5>English :  {{attendQuery.English_p/eng * 100 }}%</h5>
+			<p>Present : {{attendQuery.English_p}}
+			<p>Total : {{attendQuery.English_t}}
+		{% endif %}
 		</div>
 	</div>
 	<div class="footer">

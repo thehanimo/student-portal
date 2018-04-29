@@ -83,6 +83,9 @@
 				Delete
 			</div>
 			<div class="nav">
+				{% if current_user.usertype == 'S' %}
+				<a href="/attendance">Attendance</a>
+				{% endif %}
 				<a href="/home">Home</a>
 				{% if current_user.usertype == "A" %}
 				<a href="/register">Register</a>
@@ -98,6 +101,8 @@
 	<div class="main">
 		{% if current_user.usertype != "A" or username == 'admin'%}
 		<p> You are not allowed to access this webPage </p>
+		{% elif usernameQuery == None %}
+		<p>User does not exist</p>
 		{% else %}
 		<div class="content">
 			<h1> Delete user {{username}} ? </h1>

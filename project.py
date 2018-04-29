@@ -59,6 +59,7 @@ def login():
 
 
 @app.route("/register", methods=["GET", "POST"])
+@login_required
 def register():
 	regText = ""
 	if request.method == 'POST':
@@ -67,6 +68,7 @@ def register():
 		username = request.form['username']
 		password1 = request.form['password1']
 		password2 = request.form['password2']
+		usertype = request.form['usertype']
 		name = request.form['name']
 		dob = request.form['dob']
 		dob = dob.split('-')
@@ -88,7 +90,7 @@ def register():
 			return render_template('register.html', regText=regText)
 		elif len(password1) >= 6:
 			hashed = generate_password_hash(password1)
-			newStudent = User(username=username, password=hashed)
+			newStudent = User(username=username, password=hashed, usertype=usertype)
 			dbsess.add(newStudent)
 			dbsess.commit()
 			newStudentInfo = UserInfo(name=name, dob=dob, batch=batch, course=course, blood_group=blood_group, mobile=mobile, fathers_name=fathers_name, emergency_contact=emergency, user= newStudent)
@@ -103,6 +105,7 @@ def register():
 
 
 @app.route("/edit", methods=["GET", "POST"])
+@login_required
 def edit():
 	editText = ""
 	if request.method == 'POST':
@@ -134,10 +137,9 @@ def edit():
 		return render_template('edit.html', editText=editText)
 
 @app.route("/delete/<name>", methods=["GET", "POST"])
+@login_required
 def delete(name):
 	if request.method == 'POST':
-		if current_user.username != 'admin':
-			return render_template(url_for('edit'))
 		myQuery = dbsess.query(User).filter_by(username=name).one()
 		infoQuery = dbsess.query(UserInfo).filter_by(user=myQuery).one()
 		dbsess.delete(myQuery)

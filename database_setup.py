@@ -16,6 +16,7 @@ class User(Base, UserMixin):
     id = Column(Integer, primary_key=True)
     username = Column(String(250), nullable=False)
     password = Column(String(94), nullable=False)
+    usertype = Column(String(2), nullable=False)
 
 
 class UserInfo(Base):

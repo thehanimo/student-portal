@@ -84,7 +84,7 @@
 			</div>
 			<div class="nav">
 				<a href="/home">Home</a>
-				{% if current_user.username == "admin" %}
+				{% if current_user.usertype == "A" %}
 				<a href="/register">Register</a>
 				{% endif %}
 				{% if current_user.is_authenticated %}
@@ -98,8 +98,9 @@
 	<div class="main">
 		<div class="content">
 			<h1> {{infoQuery.name}} </h1>
+			<p> Usertype: {{myQuery.usertype}}</p>
 			<p> Username: {{myQuery.username}} 
-				{% if current_user.username != "admin" %}
+				{% if current_user.usertype != "A" %}
 				<a href="/edit">Edit</a></p>
 			<p> Date of birth: {{infoQuery.dob}}</p>
 			<p> Batch: {{infoQuery.batch}} </p>
@@ -111,7 +112,7 @@
 			{% else %}
 			<h4>Registered users:</h4>
 			{% for query in allQuery %}
-			{% if query.username != 'admin'%}
+			{% if query.usertype != 'A'%}
 			<p>{{query.username}} <a href="/delete/{{query.username}}"> delete </a>
 			{% endif %}
 			{% endfor %}

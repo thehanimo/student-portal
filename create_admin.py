@@ -13,7 +13,7 @@ session = DBSession()
 
 password = "admin123"
 hashed = generate_password_hash(password)
-admin = User(username="admin", password=hashed)
+admin = User(username="admin", password=hashed, usertype="A")
 
 session.add(admin)
 session.commit()

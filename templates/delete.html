@@ -84,7 +84,7 @@
 			</div>
 			<div class="nav">
 				<a href="/home">Home</a>
-				{% if current_user.username == "admin" %}
+				{% if current_user.usertype == "A" %}
 				<a href="/register">Register</a>
 				{% endif %}
 				{% if current_user.is_authenticated %}
@@ -96,7 +96,7 @@
 		</div>
 	</div>
 	<div class="main">
-		{% if current_user.username != "admin" or username == 'admin'%}
+		{% if current_user.usertype != "A" or username == 'admin'%}
 		<p> You are not allowed to access this webPage </p>
 		{% else %}
 		<div class="content">

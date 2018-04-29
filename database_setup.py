@@ -34,7 +34,20 @@ class UserInfo(Base):
     userId = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
 
+class Attendance(Base):
+    __tablename__ = 'attend'
 
+    id = Column(Integer, primary_key = True)
+    Math_p = Column(Integer)
+    Math_t = Column(Integer)
+    Science_p = Column(Integer)
+    Science_t = Column(Integer)
+    Art_p = Column(Integer)
+    Art_t = Column(Integer)
+    English_p = Column(Integer)
+    English_t = Column(Integer)
+    userId = Column(Integer, ForeignKey('user.id'))
+    user = relationship(User)
 
 engine = create_engine('sqlite:///user-records.db')
 

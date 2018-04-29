@@ -83,6 +83,9 @@
 				Home
 			</div>
 			<div class="nav">
+				{% if current_user.usertype == 'S' %}
+				<a href="/attendance">Attendance</a>
+				{% endif %}
 				<a href="/home">Home</a>
 				{% if current_user.usertype == "A" %}
 				<a href="/register">Register</a>
@@ -109,11 +112,12 @@
 			<p> Mobile: {{infoQuery.mobile}}</p>
 			<p> Father's Name: {{infoQuery.fathers_name}}</p>
 			<p> Emergency Contact Number: {{infoQuery.emergency_contact}}</p>
+				
 			{% else %}
 			<h4>Registered users:</h4>
 			{% for query in allQuery %}
 			{% if query.usertype != 'A'%}
-			<p>{{query.username}} <a href="/delete/{{query.username}}"> delete </a>
+			<p>{{query.username}} <a href="/delete/{{query.username}}"> delete </a>  <a href="/edit2/{{query.username}}">  Attendance </a>
 			{% endif %}
 			{% endfor %}
 			{% endif %}

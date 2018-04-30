@@ -199,6 +199,9 @@ def attendance():
 	attendQuery = dbsess.query(Attendance).filter_by(user=myQuery).first() 
 	return render_template('attendance.html', myQuery=myQuery, infoQuery=infoQuery, allQuery=allQuery, attendQuery=attendQuery)
 
+@app.route('/message')
+def hello():
+    return redirect("http://localhost:5000/" + current_user.username, code=302)
 
 
 # somewhere to logout
@@ -220,4 +223,4 @@ def page_not_found(e):
 if __name__ == '__main__':
 	app.debug = True
 	app.secret_key = 'abcd'
-	app.run(processes=3)
+	app.run(port=7000,processes=3)

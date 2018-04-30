@@ -49,6 +49,15 @@ class Attendance(Base):
     userId = Column(Integer, ForeignKey('user.id'))
     user = relationship(User)
 
+class Slides(Base):
+	__tablename__ = "slides"
+
+	id = Column(Integer, primary_key = True)
+	slideName = Column(String(30))
+	batch = Column(String(3))
+
+
+
 engine = create_engine('sqlite:///user-records.db')
 
 

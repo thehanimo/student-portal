@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="/static/style.css" type="text/css">
+	<style>
+	body {
+	  margin: 0;
+	  font-family: Arial;
+	}
+	.top{
+		height: 130px;
+	}
+	.top-container {
+	  background-color: black;
+	  color: white;
+	  font-size: 50px;
+	  height: 80px;
+	  line-height: 80px;
+	  text-align: center;
+	}
+
+	.header {
+	  width: 100%;
+	  float: left;
+	  background-color: white;
+	  color: #3498DB; 
+	}
+
+	.current{
+		text-align: center;
+		float: left;
+		width: 30%;
+		height: 50px;
+		font-size: 30px;
+		line-height: 50px;
+	}
+
+	.nav{
+		float: left;
+		width: 70%;
+		height: 50px;
+		font-size: 15px;
+		line-height: 50px;
+		text-align: right;
+	}
+
+	.nav>a{
+		padding-right: 20px;
+	}
+
+	.main{
+		background-color: #3498DB;
+	}
+	.content {
+	  margin: 20px;
+	  background-color: white;
+	  border-left: 2px solid black;
+	  border-right: 2px solid black;
+	  text-align: center;
+	  font-size: 20px;
+	  padding: 30px;
+	}
+
+	.sticky {
+	  position: fixed;
+	  top: 0;
+	  width: 100%;
+	}
+	
+	.button {
+    background-color: #396dff;
+    border: none;
+    color: white;
+    padding: 15px 25px;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+	border-radius: 13px;
+	}
+
+	.button:hover {
+    background-color: #00217f;
+	}
+
+	.sticky + .content {
+	  padding-top: 102px;
+	}
+	
+	object{
+		height:450px;
+		width:100%;
+	}
+	</style>
+</head>
+<body>
+	<div class="top">
+		<div class="top-container">
+			Student Portal
+		</div>
+		<div class="header" id="myHeader">
+			<div class="current">
+				Home
+			</div>
+			<div class="nav">
+				{% if current_user.usertype == 'S' %}
+				<a href="/attendance">Attendance</a>
+				{% endif %}
+				<a href="/home">Home</a>
+				{% if current_user.usertype == "A" %}
+				<a href="/register">Register</a>
+				{% endif %}
+				{% if current_user.is_authenticated %}
+				<a href="/logout">Logout</a>
+				{% else %}
+				<a href="/login">Login</a>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+	<div class="main">
+		<div class="content">
+			<h1>{{infoQuery.name}}</h1>
+			{% if myQuery.usertype == 'S' %}
+			{% if infoQuery.batch == 'UG1' %}
+			<button class='button' onclick="ug1()">UG-1</button>
+			<br><br><br>
+			<div id="ug1" style="display:none">	
+				<object data="/static/1.pdf"></object>
+			</div>
+			{% elif infoQuery.batch == 'UG2' %}
+			
+			<button class='button' onclick="ug2()">UG-2</button>
+			<br><br><br>
+			<div id="ug2" style="display:none">
+				<object data="/static/1.pdf"></object>
+			</div>
+			
+			{% elif infoQuery.batch == 'UG3' %}
+			<button class='button' onclick="ug3()">UG-3</button>
+			<br><br><br>
+			<div id="ug3" style="display:none">
+				<object data="/static/1.pdf"></object>
+			</div>
+			
+			{% elif infoQuery.batch == 'UG4' %} 
+			<button class='button' onclick="ug4()">UG-4</button>
+			<br><br><br>
+			<div id="ug4" style="display:none">
+				<object data="/static/1.pdf"></object>
+			</div>
+				
+			{% endif %}
+			{% else %}
+			
+				<button class='button' onclick="ug1()">UG-1</button>
+			<br><br><br>
+			<div id="ug1" style="display:none">
+				<object data="/static/1.pdf"></object>
+			</div>
+			<button class='button' onclick="ug2()">UG-2</button>
+			<br><br><br>
+			<div id="ug2" style="display:none">
+				<object data="/static/1.pdf"></object>
+			</div>
+			<button class='button' onclick="ug3()">UG-3</button>
+			<br><br><br>
+			<div id="ug3" style="display:none">
+				<object data="/static/1.pdf"></object>
+			</div>
+			<button class='button' onclick="ug4()">UG-4</button>
+			<br><br><br>
+			<div id="ug4" style="display:none">
+				<object data="/static/1.pdf"></object>
+			
+			</div>
+			{% endif %}
+		</div>
+	</div>
+	<div class="footer">
+
+	</div>
+
+
+
+	<script>
+	
+	function ug1() {
+    
+	var x = document.getElementById("ug1");
+    
+	if (x.style.display === "block") {
+		x.style.display = "none";
+		} 
+	else {
+		x.style.display = "block";
+		}
+	}
+	function ug2() {
+    
+	var x = document.getElementById("ug2");
+    
+	if (x.style.display === "block") {
+		x.style.display = "none";
+		} 
+	else {
+		x.style.display = "block";
+		}
+	}
+	function ug3() {
+    
+	var x = document.getElementById("ug3");
+    
+	if (x.style.display === "block") {
+		x.style.display = "none";
+		} 
+	else {
+		x.style.display = "block";
+		}
+	}
+	function ug4() {
+    
+	var x = document.getElementById("ug4");
+    
+	if (x.style.display === "block") {
+		x.style.display = "none";
+		} 
+	else {
+		x.style.display = "block";
+		}
+	}
+	
+	window.onscroll = function() {myFunction()};
+
+	var header = document.getElementById("myHeader");
+	var sticky = header.offsetTop;
+
+	function myFunction() {
+	  if (window.pageYOffset >= sticky) {
+	    header.classList.add("sticky");
+	  } else {
+	    header.classList.remove("sticky");
+	  }
+	}
+	</script>
+</body>

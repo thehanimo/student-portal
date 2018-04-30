@@ -5,7 +5,7 @@ from flask_login import LoginManager, UserMixin, login_required, login_user, log
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, User, UserInfo, Attendance
+from database_setup import Base, User, UserInfo, Attendance, Slides
 from werkzeug.security import generate_password_hash, check_password_hash
 
 
@@ -22,7 +22,7 @@ login_manager.login_view = "login"
 
 @login_manager.user_loader
 def load_user(user_id):
-	return dbsess.query(User).filter_by(id=user_id).first()        
+	return dbsess.query(User).filter_by(id=user_id).one()        
         
 
 
@@ -33,8 +33,8 @@ def home():
     username = current_user.username
     attendQuery = dbsess.query(Attendance).all()
     allQuery = dbsess.query(User).all()
-    myQuery = dbsess.query(User).filter_by(username=username).first()
-    infoQuery = dbsess.query(UserInfo).filter_by(user=myQuery).first() 
+    myQuery = dbsess.query(User).filter_by(username=username).one()
+    infoQuery = dbsess.query(UserInfo).filter_by(user=myQuery).one() 
     return render_template('home.html', myQuery=myQuery, infoQuery=infoQuery, allQuery=allQuery)
 
 
@@ -114,7 +114,7 @@ def edit():
 	editText = ""
 	if request.method == 'POST':
 		username = current_user.username
-		myQuery = dbsess.query(User).filter_by(username=username).first()
+		myQuery = dbsess.query(User).filter_by(username=username).one()
 		usernameNew = request.form['usernameNew']
 		password1 = request.form['password1']
 		password2 = request.form['password2']
@@ -144,9 +144,9 @@ def edit():
 @login_required
 def delete(name):
 	if request.method == 'POST':
-		myQuery = dbsess.query(User).filter_by(username=name).first()
-		infoQuery = dbsess.query(UserInfo).filter_by(user=myQuery).first()
-		attendQuery = dbsess.query(Attendance).filter_by(user=myQuery).first()
+		myQuery = dbsess.query(User).filter_by(username=name).one()
+		infoQuery = dbsess.query(UserInfo).filter_by(user=myQuery).one()
+		attendQuery = dbsess.query(Attendance).filter_by(user=myQuery).one()
 		dbsess.delete(myQuery)
 		dbsess.delete(infoQuery)
 		dbsess.commit()
@@ -156,12 +156,32 @@ def delete(name):
 		return render_template('delete.html', username=name, usernameQuery=usernameQuery)
 
 
+@app.route('/slides/<name>', methods = ['GET','POST'])
+@login_required
+def slides(name):
+	if request.method == 'POST':
+		myQuery = dbsess.query(User).filter_by(username = name).one()
+		infoQuery = dbsess.query(UserInfo).filter_by(user=myQuery).one()
+		slideQuery = dbsess.query(Slides).all()
+		slideName = request.form['slideName']
+		batch = request.form['batch']
+		newSlide = Slides(slideName = slideName, batch = batch)
+		dbsess.add(newSlide)
+		dbsess.commit()
+		return render_template('slides.html',myQuery = myQuery, infoQuery = infoQuery, slideQuery = slideQuery)
+	else:
+		myQuery = dbsess.query(User).filter_by(username = name).one()
+		infoQuery = dbsess.query(UserInfo).filter_by(user=myQuery).one()
+		slideQuery = dbsess.query(Slides).all()
+		return render_template('slides.html',myQuery = myQuery, infoQuery = infoQuery, slideQuery = slideQuery)
+
+
 @app.route('/edit2/<name>',methods=["GET","POST"])
 @login_required
 def edit2(name):
 	if request.method == 'POST':
-		myQuery = dbsess.query(User).filter_by(username=name).first()
-		attendQuery = dbsess.query(Attendance).filter_by(user=myQuery).first()
+		myQuery = dbsess.query(User).filter_by(username=name).one()
+		attendQuery = dbsess.query(Attendance).filter_by(user=myQuery).one()
 		mathp = request.form['mathp']
 		matht = request.form['matht']
 		sciencep = request.form['sciencep']
@@ -187,6 +207,21 @@ def edit2(name):
 		attendQuery = dbsess.query(Attendance).filter_by(user=myQuery).first()
 		return render_template("edit2.html", myQuery = myQuery, attendQuery = attendQuery, username = name, usernameQuery=usernameQuery)
 
+@app.route("/timetable")
+@login_required
+def timetable():
+	username = current_user.username
+	myQuery = dbsess.query(User).filter_by(username=username).one()
+	infoQuery = dbsess.query(UserInfo).filter_by(user=myQuery).one()
+	return render_template('timetable.html', username = username, myQuery = myQuery, infoQuery = infoQuery)
+
+@app.route('/calender',methods = ['GET','POST'])
+@login_required
+def calender():
+	username = current_user.username
+	myQuery = dbsess.query(User).filter_by(username=username).one()
+	infoQuery = dbsess.query(UserInfo).filter_by(user=myQuery).one()
+	return render_template('calender.html', myQuery=myQuery, infoQuery=infoQuery)
 
 
 @app.route('/attendance')
@@ -194,14 +229,11 @@ def edit2(name):
 def attendance():
 	username = current_user.username
 	allQuery = dbsess.query(User).all()
-	myQuery = dbsess.query(User).filter_by(username=username).first()
-	infoQuery = dbsess.query(UserInfo).filter_by(user=myQuery).first()
-	attendQuery = dbsess.query(Attendance).filter_by(user=myQuery).first() 
+	myQuery = dbsess.query(User).filter_by(username=username).one()
+	infoQuery = dbsess.query(UserInfo).filter_by(user=myQuery).one()
+	attendQuery = dbsess.query(Attendance).filter_by(user=myQuery).one() 
 	return render_template('attendance.html', myQuery=myQuery, infoQuery=infoQuery, allQuery=allQuery, attendQuery=attendQuery)
 
-@app.route('/message')
-def hello():
-    return redirect("http://localhost:5000/" + current_user.username, code=302)
 
 
 # somewhere to logout
@@ -223,4 +255,4 @@ def page_not_found(e):
 if __name__ == '__main__':
 	app.debug = True
 	app.secret_key = 'abcd'
-	app.run(port=7000,processes=3)
+	app.run()

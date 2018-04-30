@@ -22,7 +22,7 @@ login_manager.login_view = "login"
 
 @login_manager.user_loader
 def load_user(user_id):
-	return dbsess.query(User).filter_by(id=user_id).one()        
+	return dbsess.query(User).filter_by(id=user_id).first()        
         
 
 
@@ -33,8 +33,8 @@ def home():
     username = current_user.username
     attendQuery = dbsess.query(Attendance).all()
     allQuery = dbsess.query(User).all()
-    myQuery = dbsess.query(User).filter_by(username=username).one()
-    infoQuery = dbsess.query(UserInfo).filter_by(user=myQuery).one() 
+    myQuery = dbsess.query(User).filter_by(username=username).first()
+    infoQuery = dbsess.query(UserInfo).filter_by(user=myQuery).first() 
     return render_template('home.html', myQuery=myQuery, infoQuery=infoQuery, allQuery=allQuery)
 
 
@@ -114,7 +114,7 @@ def edit():
 	editText = ""
 	if request.method == 'POST':
 		username = current_user.username
-		myQuery = dbsess.query(User).filter_by(username=username).one()
+		myQuery = dbsess.query(User).filter_by(username=username).first()
 		usernameNew = request.form['usernameNew']
 		password1 = request.form['password1']
 		password2 = request.form['password2']
@@ -144,9 +144,9 @@ def edit():
 @login_required
 def delete(name):
 	if request.method == 'POST':
-		myQuery = dbsess.query(User).filter_by(username=name).one()
-		infoQuery = dbsess.query(UserInfo).filter_by(user=myQuery).one()
-		attendQuery = dbsess.query(Attendance).filter_by(user=myQuery).one()
+		myQuery = dbsess.query(User).filter_by(username=name).first()
+		infoQuery = dbsess.query(UserInfo).filter_by(user=myQuery).first()
+		attendQuery = dbsess.query(Attendance).filter_by(user=myQuery).first()
 		dbsess.delete(myQuery)
 		dbsess.delete(infoQuery)
 		dbsess.commit()
@@ -160,8 +160,8 @@ def delete(name):
 @login_required
 def edit2(name):
 	if request.method == 'POST':
-		myQuery = dbsess.query(User).filter_by(username=name).one()
-		attendQuery = dbsess.query(Attendance).filter_by(user=myQuery).one()
+		myQuery = dbsess.query(User).filter_by(username=name).first()
+		attendQuery = dbsess.query(Attendance).filter_by(user=myQuery).first()
 		mathp = request.form['mathp']
 		matht = request.form['matht']
 		sciencep = request.form['sciencep']
@@ -194,9 +194,9 @@ def edit2(name):
 def attendance():
 	username = current_user.username
 	allQuery = dbsess.query(User).all()
-	myQuery = dbsess.query(User).filter_by(username=username).one()
-	infoQuery = dbsess.query(UserInfo).filter_by(user=myQuery).one()
-	attendQuery = dbsess.query(Attendance).filter_by(user=myQuery).one() 
+	myQuery = dbsess.query(User).filter_by(username=username).first()
+	infoQuery = dbsess.query(UserInfo).filter_by(user=myQuery).first()
+	attendQuery = dbsess.query(Attendance).filter_by(user=myQuery).first() 
 	return render_template('attendance.html', myQuery=myQuery, infoQuery=infoQuery, allQuery=allQuery, attendQuery=attendQuery)
 
 
@@ -220,4 +220,4 @@ def page_not_found(e):
 if __name__ == '__main__':
 	app.debug = True
 	app.secret_key = 'abcd'
-	app.run()
+	app.run(processes=3)

@@ -106,7 +106,7 @@
 			<form action = "/slides/{{current_user.username}}" method="POST">
 				<div class="login">
 				<div class="login-form">
-				Name of new slide :<input type="text" name="slideName">
+				Link of new slide :<input type="text" name="slideName">
 				Batch :<input type="text" name="batch">
 				<input type="submit" value="SUBMIT" class="btn btn-primary btn-large btn-block">
 			</form>
@@ -114,7 +114,7 @@
 			
 			{% for query1 in slideQuery %}
 			{% if query1.batch == infoQuery.batch %}
-			<a href="/static/slide/{{query1.slideName}}">{{query1.slideName}}</a>
+			<a href="{{query1.slideName}}">{{query1.slideName}}</a>
 			{% endif %}
 			{% endfor %}
 			
